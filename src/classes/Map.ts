@@ -7,14 +7,14 @@ export class GameMap {
         const h = height - margin * 2;
 
         this.waypoints = [
-            { x: 0, y: height / 2 },              // Start
+            { x: 20, y: height / 2 },              // Start
             { x: margin, y: height / 2 },
             { x: margin, y: height / 2 - h * 0.3 },
             { x: width - margin, y: height / 2 - h * 0.3 },
             { x: width - margin, y: height / 2 + h * 0.3 },
             { x: margin, y: height / 2 + h * 0.3 },
             { x: margin, y: height / 2 },
-            { x: width, y: height / 2 },          // Goal
+            { x: width - 20, y: height / 2 },      // Goal
         ];
     }
 
