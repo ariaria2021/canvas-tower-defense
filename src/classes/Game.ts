@@ -78,11 +78,6 @@ export class Game {
     update(dt: number) {
         if (this.isGameOver) return;
 
-        const enemyCountEl = document.getElementById('enemy-count');
-        if (enemyCountEl) {
-            enemyCountEl.textContent = (this.totalEnemiesToSpawn - this.spawnedEnemiesCount + this.entities.filter(e => e instanceof Enemy).length).toString();
-        }
-
         this.enemySpawnTimer += dt;
         if (this.enemySpawnTimer >= this.enemySpawnInterval && this.spawnedEnemiesCount < this.totalEnemiesToSpawn) {
             this.enemySpawnTimer = 0;
@@ -121,11 +116,20 @@ export class Game {
         });
 
         this.entities = this.entities.filter(entity => !entity.markedForDeletion);
+        this.updateUI();
 
         // ステージクリア判定
         const remainingEnemies = this.entities.filter(e => e instanceof Enemy).length;
         if (this.spawnedEnemiesCount >= this.totalEnemiesToSpawn && remainingEnemies === 0 && !this.isGameOver) {
             this.winGame();
+        }
+    }
+
+    updateUI() {
+        const enemyCountEl = document.getElementById('enemy-count');
+        if (enemyCountEl) {
+            const currentEnemies = this.entities.filter(e => e instanceof Enemy).length;
+            enemyCountEl.textContent = (this.totalEnemiesToSpawn - this.spawnedEnemiesCount + currentEnemies).toString();
         }
     }
 
