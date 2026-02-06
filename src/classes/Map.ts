@@ -2,20 +2,20 @@ export class GameMap {
     waypoints: { x: number; y: number }[] = [];
 
     constructor(width: number, height: number) {
-        // シンプルなジグザグコースを生成（画面サイズに合わせて調整）
-        const margin = 100;
+        // 論理座標(800xH)に基づいた固定のコース設計
+        const margin = 60;
         const w = width - margin * 2;
-        // const h = height - margin * 2; // 未使用変数を削除
+        const h = height - margin * 2;
 
         this.waypoints = [
-            { x: margin, y: height / 2 },              // Start
-            { x: margin + w * 0.2, y: height / 2 },
-            { x: margin + w * 0.2, y: margin },
-            { x: margin + w * 0.5, y: margin },
-            { x: margin + w * 0.5, y: height - margin },
-            { x: margin + w * 0.8, y: height - margin },
-            { x: margin + w * 0.8, y: height / 2 },
-            { x: width - margin, y: height / 2 },      // Goal
+            { x: 0, y: height / 2 },              // Start
+            { x: margin, y: height / 2 },
+            { x: margin, y: height / 2 - h * 0.3 },
+            { x: width - margin, y: height / 2 - h * 0.3 },
+            { x: width - margin, y: height / 2 + h * 0.3 },
+            { x: margin, y: height / 2 + h * 0.3 },
+            { x: margin, y: height / 2 },
+            { x: width, y: height / 2 },          // Goal
         ];
     }
 
