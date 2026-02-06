@@ -11,9 +11,9 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
       <span class="label">MONEY</span>
       <span id="money" class="value">100</span>
     </div>
-    <div class="stat-box" style="display:none"> <!-- スコアは今回実装外 -->
-      <span class="label">SCORE</span>
-      <span id="score" class="value">0</span>
+    <div class="stat-box">
+      <span class="label">ENEMIES</span>
+      <span id="enemy-count" class="value">0</span>
     </div>
   </div>
   <canvas id="gameCanvas"></canvas>

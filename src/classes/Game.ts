@@ -14,7 +14,10 @@ export class Game {
     map: GameMap;
     enemySpawnTimer: number = 0;
     enemySpawnInterval: number = 1.5;
+    totalEnemiesToSpawn: number = 10;
+    spawnedEnemiesCount: number = 0;
     stats: PlayerStats;
+    isGameOver: boolean = false;
 
     constructor(canvas: HTMLCanvasElement) {
         this.canvas = canvas;
@@ -61,6 +64,8 @@ export class Game {
     }
 
     loop(timestamp: number) {
+        if (this.isGameOver) return;
+
         const dt = (timestamp - this.lastTime) / 1000;
         this.lastTime = timestamp;
 
@@ -71,10 +76,18 @@ export class Game {
     }
 
     update(dt: number) {
+        if (this.isGameOver) return;
+
+        const enemyCountEl = document.getElementById('enemy-count');
+        if (enemyCountEl) {
+            enemyCountEl.textContent = (this.totalEnemiesToSpawn - this.spawnedEnemiesCount + this.entities.filter(e => e instanceof Enemy).length).toString();
+        }
+
         this.enemySpawnTimer += dt;
-        if (this.enemySpawnTimer >= this.enemySpawnInterval) {
+        if (this.enemySpawnTimer >= this.enemySpawnInterval && this.spawnedEnemiesCount < this.totalEnemiesToSpawn) {
             this.enemySpawnTimer = 0;
             this.entities.push(new Enemy(this.map.waypoints));
+            this.spawnedEnemiesCount++;
         }
 
         this.entities.forEach(entity => {
@@ -108,6 +121,20 @@ export class Game {
         });
 
         this.entities = this.entities.filter(entity => !entity.markedForDeletion);
+
+        // ステージクリア判定
+        const remainingEnemies = this.entities.filter(e => e instanceof Enemy).length;
+        if (this.spawnedEnemiesCount >= this.totalEnemiesToSpawn && remainingEnemies === 0 && !this.isGameOver) {
+            this.winGame();
+        }
+    }
+
+    winGame() {
+        this.isGameOver = true;
+        setTimeout(() => {
+            alert('STAGE CLEAR!');
+            location.reload();
+        }, 500);
     }
 
     draw() {
