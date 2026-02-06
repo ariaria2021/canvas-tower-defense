@@ -72,6 +72,12 @@ export class Game {
         const snappedX = Math.floor(x / gridSize) * gridSize + gridSize / 2;
         const snappedY = Math.floor(y / gridSize) * gridSize + gridSize / 2;
 
+        // すでにタワーがあるかチェック
+        const existingTower = this.entities.find(e =>
+            e instanceof Tower && e.x === snappedX && e.y === snappedY
+        );
+        if (existingTower) return;
+
         // タワーコスト: 50
         if (this.stats.spendMoney(50)) {
             this.addEntity(new Tower(snappedX, snappedY, this));
