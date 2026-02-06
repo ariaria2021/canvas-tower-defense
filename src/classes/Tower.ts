@@ -10,7 +10,7 @@ export class Tower extends Entity {
     game: Game;
 
     constructor(x: number, y: number, game: Game) {
-        super(x, y, 20, '#3B82F6'); // Blue Square
+        super(x, y, 22, '#4F86C6'); // Soft Blue Square
         this.game = game;
     }
 
@@ -55,9 +55,9 @@ export class Tower extends Entity {
 
     draw(ctx: CanvasRenderingContext2D): void {
         ctx.fillStyle = this.color;
-        ctx.fillRect(this.x - 15, this.y - 15, 30, 30);
+        ctx.fillRect(this.x - 18, this.y - 18, 36, 36);
 
-        ctx.fillStyle = '#1D4ED8';
-        ctx.fillRect(this.x - 5, this.y - 5, 10, 10);
+        ctx.fillStyle = '#3A6BA5';
+        ctx.fillRect(this.x - 6, this.y - 6, 12, 12);
     }
 }

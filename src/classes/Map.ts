@@ -21,8 +21,8 @@ export class GameMap {
     draw(ctx: CanvasRenderingContext2D) {
         if (this.waypoints.length < 2) return;
 
-        ctx.strokeStyle = '#374151'; // Path color
-        ctx.lineWidth = 40;
+        ctx.strokeStyle = '#E6DDC3'; // Earthy Path color
+        ctx.lineWidth = 44;
         ctx.lineCap = 'round';
         ctx.lineJoin = 'round';
 
@@ -34,14 +34,14 @@ export class GameMap {
         ctx.stroke();
 
         // Start & Goal markers
-        ctx.fillStyle = '#10B981'; // Start (Green)
+        ctx.fillStyle = '#3E8E7E'; // Start (Muted Green)
         ctx.beginPath();
-        ctx.arc(this.waypoints[0].x, this.waypoints[0].y, 15, 0, Math.PI * 2);
+        ctx.arc(this.waypoints[0].x, this.waypoints[0].y, 18, 0, Math.PI * 2);
         ctx.fill();
 
-        ctx.fillStyle = '#EF4444'; // Goal (Red)
+        ctx.fillStyle = '#B8405E'; // Goal (Muted Red)
         ctx.beginPath();
-        ctx.arc(this.waypoints[this.waypoints.length - 1].x, this.waypoints[this.waypoints.length - 1].y, 15, 0, Math.PI * 2);
+        ctx.arc(this.waypoints[this.waypoints.length - 1].x, this.waypoints[this.waypoints.length - 1].y, 18, 0, Math.PI * 2);
         ctx.fill();
     }
 }

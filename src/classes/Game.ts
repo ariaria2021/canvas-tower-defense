@@ -131,15 +131,15 @@ export class Game {
 
             const rand = Math.random();
             if (this.currentStage >= 3 && rand < 0.2) {
-                // Fast (Yellow)
+                // Fast (Yellowish/Mustard)
                 health = 50;
                 speed = 200;
-                color = '#FBBF24';
+                color = '#D4A017';
             } else if (this.currentStage >= 2 && rand < 0.4) {
-                // Tank (Blue)
+                // Tank (Deep Blue/Slate)
                 health = 300;
                 speed = 60;
-                color = '#3B82F6';
+                color = '#4F86C6';
             }
 
             // ステージが進むごとに全体的に大幅に強化（少数精鋭）
@@ -232,7 +232,7 @@ export class Game {
         this.ctx.save();
         this.ctx.scale(this.scale, this.scale);
 
-        this.ctx.fillStyle = '#111827';
+        this.ctx.fillStyle = '#FFF9E5';
         this.ctx.fillRect(0, 0, this.logicalWidth, this.logicalHeight);
 
         this.drawGrid();
@@ -244,7 +244,7 @@ export class Game {
 
     drawGrid() {
         const gridSize = 40;
-        this.ctx.strokeStyle = '#1f2937';
+        this.ctx.strokeStyle = '#E0D8C0';
         this.ctx.lineWidth = 1;
 
         for (let x = 0; x <= this.logicalWidth; x += gridSize) {

@@ -7,9 +7,9 @@ export class Enemy extends Entity {
     health: number = 100;
     maxHealth: number = 100;
 
-    constructor(waypoints: { x: number; y: number }[], health: number = 100, speed: number = 100, color: string = '#EF4444') {
+    constructor(waypoints: { x: number; y: number }[], health: number = 100, speed: number = 100, color: string = '#D64545') {
         // 最初のウェイポイントから開始
-        super(waypoints[0].x, waypoints[0].y, 15, color);
+        super(waypoints[0].x, waypoints[0].y, 16, color);
         this.waypoints = waypoints;
         this.currentWaypointIndex = 0;
         this.health = health;
