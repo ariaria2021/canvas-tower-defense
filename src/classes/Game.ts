@@ -135,10 +135,16 @@ export class Game {
 
     winGame() {
         this.isGameOver = true;
-        setTimeout(() => {
-            alert('STAGE CLEAR!');
-            location.reload();
-        }, 500);
+        const overlay = document.getElementById('overlay');
+        const restartBtn = document.getElementById('restart-btn');
+
+        if (overlay) {
+            overlay.classList.add('active');
+        }
+
+        if (restartBtn) {
+            restartBtn.onclick = () => location.reload();
+        }
     }
 
     draw() {

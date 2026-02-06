@@ -17,6 +17,12 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
     </div>
   </div>
   <canvas id="gameCanvas"></canvas>
+  <div id="overlay" class="overlay">
+    <div class="overlay-content">
+      <h2 id="overlay-title">STAGE CLEAR!</h2>
+      <button id="restart-btn" class="restart-btn">NEXT STAGE</button>
+    </div>
+  </div>
 `;
 
 const canvas = document.querySelector<HTMLCanvasElement>('#gameCanvas')!;
