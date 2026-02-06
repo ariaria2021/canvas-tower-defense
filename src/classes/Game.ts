@@ -40,7 +40,7 @@ export class Game {
         this.logicalHeight = this.height / this.scale;
         this.lastTime = 0;
 
-        this.map = new GameMap(this.width, this.height);
+        this.map = new GameMap(this.logicalWidth, this.logicalHeight);
         this.stats = new PlayerStats();
 
         window.addEventListener('resize', () => this.resize());
