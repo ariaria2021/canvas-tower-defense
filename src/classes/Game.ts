@@ -32,8 +32,12 @@ export class Game {
     constructor(canvas: HTMLCanvasElement) {
         this.canvas = canvas;
         this.ctx = canvas.getContext('2d')!;
-        this.width = window.innerWidth;
-        this.height = window.innerHeight;
+
+        // ヘッダーの高さを差し引いた現在のコンテナサイズを取得
+        const rect = canvas.getBoundingClientRect();
+        this.width = rect.width;
+        this.height = rect.height;
+
         this.canvas.width = this.width;
         this.canvas.height = this.height;
         this.scale = this.width / this.logicalWidth;
@@ -48,8 +52,9 @@ export class Game {
     }
 
     resize() {
-        this.width = window.innerWidth;
-        this.height = window.innerHeight;
+        const rect = this.canvas.getBoundingClientRect();
+        this.width = rect.width;
+        this.height = rect.height;
         this.canvas.width = this.width;
         this.canvas.height = this.height;
         this.scale = this.width / this.logicalWidth;
