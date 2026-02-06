@@ -18,6 +18,10 @@ export class Game {
     spawnedEnemiesCount: number = 0;
     stats: PlayerStats;
     isGameOver: boolean = false;
+    currentStage: number = 1;
+
+    enemyBaseHealth: number = 100;
+    enemyBaseSpeed: number = 100;
 
     constructor(canvas: HTMLCanvasElement) {
         this.canvas = canvas;
@@ -81,7 +85,10 @@ export class Game {
         this.enemySpawnTimer += dt;
         if (this.enemySpawnTimer >= this.enemySpawnInterval && this.spawnedEnemiesCount < this.totalEnemiesToSpawn) {
             this.enemySpawnTimer = 0;
-            this.entities.push(new Enemy(this.map.waypoints));
+            // ステージに応じて敵を強化
+            const health = this.enemyBaseHealth * (1 + (this.currentStage - 1) * 0.2);
+            const speed = this.enemyBaseSpeed * (1 + (this.currentStage - 1) * 0.1);
+            this.entities.push(new Enemy(this.map.waypoints, health, speed));
             this.spawnedEnemiesCount++;
         }
 
@@ -127,9 +134,15 @@ export class Game {
 
     updateUI() {
         const enemyCountEl = document.getElementById('enemy-count');
+        const stageEl = document.getElementById('stage');
+
         if (enemyCountEl) {
             const currentEnemies = this.entities.filter(e => e instanceof Enemy).length;
             enemyCountEl.textContent = (this.totalEnemiesToSpawn - this.spawnedEnemiesCount + currentEnemies).toString();
+        }
+
+        if (stageEl) {
+            stageEl.textContent = this.currentStage.toString();
         }
     }
 
@@ -137,14 +150,37 @@ export class Game {
         this.isGameOver = true;
         const overlay = document.getElementById('overlay');
         const restartBtn = document.getElementById('restart-btn');
+        const titleEl = document.getElementById('overlay-title');
 
+        if (titleEl) titleEl.textContent = `STAGE ${this.currentStage} CLEAR!`;
         if (overlay) {
             overlay.classList.add('active');
         }
 
         if (restartBtn) {
-            restartBtn.onclick = () => location.reload();
+            restartBtn.textContent = 'NEXT STAGE';
+            restartBtn.onclick = () => this.startNextStage();
         }
+    }
+
+    startNextStage() {
+        this.currentStage++;
+        this.totalEnemiesToSpawn = 10 + (this.currentStage - 1) * 5;
+        this.spawnedEnemiesCount = 0;
+        this.enemySpawnTimer = 0;
+        this.isGameOver = false;
+
+        // 既存の敵や弾丸をクリア（タワーは残す）
+        this.entities = this.entities.filter(entity => entity instanceof Tower);
+
+        const overlay = document.getElementById('overlay');
+        if (overlay) {
+            overlay.classList.remove('active');
+        }
+
+        this.updateUI();
+        this.lastTime = performance.now();
+        requestAnimationFrame((ts) => this.loop(ts));
     }
 
     draw() {

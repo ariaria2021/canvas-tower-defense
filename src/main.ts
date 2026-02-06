@@ -4,6 +4,10 @@ import { Game } from './classes/Game';
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
   <div id="ui-layer">
     <div class="stat-box">
+      <span class="label">STAGE</span>
+      <span id="stage" class="value">1</span>
+    </div>
+    <div class="stat-box">
       <span class="label">HP</span>
       <span id="lives" class="value">20</span>
     </div>
