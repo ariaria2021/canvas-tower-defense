@@ -19,6 +19,10 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
       <span class="label">ENEMIES</span>
       <span id="enemy-count" class="value">0</span>
     </div>
+    <div class="stat-box clickable" id="pause-btn">
+      <span class="label">PAUSE</span>
+      <span id="pause-status" class="value">II</span>
+    </div>
   </div>
   <canvas id="gameCanvas"></canvas>
   <div id="overlay" class="overlay">
@@ -31,5 +35,9 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
 
 const canvas = document.querySelector<HTMLCanvasElement>('#gameCanvas')!;
 const game = new Game(canvas);
+
+document.getElementById('pause-btn')?.addEventListener('click', () => {
+  game.togglePause();
+});
 
 game.start();

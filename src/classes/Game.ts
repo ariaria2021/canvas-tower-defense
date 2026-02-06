@@ -18,6 +18,7 @@ export class Game {
     spawnedEnemiesCount: number = 0;
     stats: PlayerStats;
     isGameOver: boolean = false;
+    isPaused: boolean = false;
     currentStage: number = 1;
 
     enemyBaseHealth: number = 100;
@@ -72,7 +73,7 @@ export class Game {
     }
 
     loop(timestamp: number) {
-        if (this.isGameOver) return;
+        if (this.isGameOver || this.isPaused) return;
 
         const dt = (timestamp - this.lastTime) / 1000;
         this.lastTime = timestamp;
@@ -81,6 +82,19 @@ export class Game {
         this.draw();
 
         requestAnimationFrame((ts) => this.loop(ts));
+    }
+
+    togglePause() {
+        this.isPaused = !this.isPaused;
+        const pauseStatus = document.getElementById('pause-status');
+        if (pauseStatus) {
+            pauseStatus.textContent = this.isPaused ? '▶' : 'II';
+        }
+
+        if (!this.isPaused) {
+            this.lastTime = performance.now();
+            requestAnimationFrame((ts) => this.loop(ts));
+        }
     }
 
     update(dt: number) {
@@ -107,9 +121,10 @@ export class Game {
                 color = '#3B82F6';
             }
 
-            // ステージが進むごとに全体的に少しだけ強化
-            const multiplier = 1 + (this.currentStage - 1) * 0.1;
-            this.entities.push(new Enemy(this.map.waypoints, health * multiplier, speed, color));
+            // ステージが進むごとに全体的に強化
+            const hpMultiplier = 1 + (this.currentStage - 1) * 0.25;
+            const speedMultiplier = 1 + (this.currentStage - 1) * 0.15;
+            this.entities.push(new Enemy(this.map.waypoints, health * hpMultiplier, speed * speedMultiplier, color));
             this.spawnedEnemiesCount++;
         }
 
@@ -172,7 +187,7 @@ export class Game {
 
     startNextStage() {
         this.currentStage++;
-        this.totalEnemiesToSpawn = 10 + (this.currentStage - 1) * 10;
+        this.totalEnemiesToSpawn = 10 + (this.currentStage - 1) * 5;
         this.spawnedEnemiesCount = 0;
         this.enemySpawnTimer = 0;
         this.isGameOver = false;
