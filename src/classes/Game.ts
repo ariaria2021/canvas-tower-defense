@@ -7,8 +7,8 @@ import { PlayerStats } from './PlayerStats';
 export class Game {
     canvas: HTMLCanvasElement;
     ctx: CanvasRenderingContext2D;
-    width: number;
-    height: number;
+    width: number = 0;
+    height: number = 0;
     lastTime: number;
     entities: Entity[] = [];
     map: GameMap;
@@ -21,10 +21,12 @@ export class Game {
     isPaused: boolean = false;
     currentStage: number = 1;
 
-    // 仮想座標系
-    logicalWidth: number = 800;
-    logicalHeight: number = 600;
+    // 画面サイズによらず盤面とゲーム内の距離を固定する。
+    readonly logicalWidth: number = 800;
+    readonly logicalHeight: number = 600;
     scale: number = 1;
+    offsetX: number = 0;
+    offsetY: number = 0;
 
     enemyBaseHealth: number = 100;
     enemyBaseSpeed: number = 100;
@@ -33,19 +35,14 @@ export class Game {
         this.canvas = canvas;
         this.ctx = canvas.getContext('2d')!;
 
-        // ヘッダーの高さを差し引いた現在のコンテナサイズを取得
-        const rect = canvas.getBoundingClientRect();
-        this.width = rect.width;
-        this.height = rect.height;
-
-        this.canvas.width = this.width;
-        this.canvas.height = this.height;
-        this.scale = this.width / this.logicalWidth;
-        this.logicalHeight = this.height / this.scale;
         this.lastTime = 0;
 
         this.map = new GameMap(this.logicalWidth, this.logicalHeight);
         this.stats = new PlayerStats();
+        this.resize();
+
+        // ヘッダーの折り返しなど、ウィンドウ以外のサイズ変化にも追従する。
+        new ResizeObserver(() => this.resize()).observe(canvas);
 
         window.addEventListener('resize', () => this.resize());
         canvas.addEventListener('click', (e) => this.handleClick(e));
@@ -57,16 +54,19 @@ export class Game {
         this.height = rect.height;
         this.canvas.width = this.width;
         this.canvas.height = this.height;
-        this.scale = this.width / this.logicalWidth;
-        this.logicalHeight = this.height / this.scale;
-        this.map = new GameMap(this.logicalWidth, this.logicalHeight);
+        this.scale = Math.min(this.width / this.logicalWidth, this.height / this.logicalHeight);
+        this.offsetX = Math.max(0, (this.width - this.logicalWidth * this.scale) / 2);
+        this.offsetY = Math.max(0, (this.height - this.logicalHeight * this.scale) / 2);
+        this.draw();
     }
 
     handleClick(e: MouseEvent) {
         const rect = this.canvas.getBoundingClientRect();
-        // 仮想座標に変換
-        const x = (e.clientX - rect.left) / this.scale;
-        const y = (e.clientY - rect.top) / this.scale;
+        if (this.scale <= 0) return;
+        // 表示の余白を除き、固定盤面の座標へ変換する。
+        const x = (e.clientX - rect.left - this.offsetX) / this.scale;
+        const y = (e.clientY - rect.top - this.offsetY) / this.scale;
+        if (x < 0 || x >= this.logicalWidth || y < 0 || y >= this.logicalHeight) return;
 
         const gridSize = 40;
         const snappedX = Math.floor(x / gridSize) * gridSize + gridSize / 2;
@@ -81,6 +81,7 @@ export class Game {
         // タワーコスト: 50
         if (this.stats.spendMoney(50)) {
             this.addEntity(new Tower(snappedX, snappedY, this));
+            this.draw();
         }
     }
 
@@ -221,8 +222,17 @@ export class Game {
     }
 
     draw() {
+        // 余白も毎回描画し、回転前の盤面を残さない。
+        this.ctx.fillStyle = '#E6DDC3';
+        this.ctx.fillRect(0, 0, this.width, this.height);
+        if (this.scale <= 0) return;
+
         this.ctx.save();
+        this.ctx.translate(this.offsetX, this.offsetY);
         this.ctx.scale(this.scale, this.scale);
+        this.ctx.beginPath();
+        this.ctx.rect(0, 0, this.logicalWidth, this.logicalHeight);
+        this.ctx.clip();
 
         this.ctx.fillStyle = '#FFF9E5';
         this.ctx.fillRect(0, 0, this.logicalWidth, this.logicalHeight);

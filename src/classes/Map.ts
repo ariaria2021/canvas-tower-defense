@@ -2,7 +2,7 @@ export class GameMap {
     waypoints: { x: number; y: number }[] = [];
 
     constructor(width: number, height: number) {
-        // 論理座標(800xH)に基づいた固定のコース設計
+        // 固定の論理座標に基づいたコース設計
         const margin = 60;
         const h = height - margin * 2;
 
