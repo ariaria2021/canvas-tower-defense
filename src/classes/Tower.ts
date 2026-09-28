@@ -35,6 +35,8 @@ export class Tower extends Entity {
         const enemies = this.game.entities.filter(e => e instanceof Enemy) as Enemy[];
 
         for (const enemy of enemies) {
+            if (enemy.markedForDeletion) continue;
+
             const dx = enemy.x - this.x;
             const dy = enemy.y - this.y;
             const distance = Math.sqrt(dx * dx + dy * dy);

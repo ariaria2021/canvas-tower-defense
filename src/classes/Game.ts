@@ -142,9 +142,9 @@ export class Game {
                 color = '#4F86C6';
             }
 
-            // ステージが進むごとに全体的に大幅に強化（少数精鋭）
+            // HPは成長を続け、速度は弾が追いつける範囲に制限する。
             const hpMultiplier = 1 + (this.currentStage - 1) * 0.5;
-            const speedMultiplier = 1 + (this.currentStage - 1) * 0.1;
+            const speedMultiplier = Math.min(1.5, 1 + (this.currentStage - 1) * 0.1);
             this.entities.push(new Enemy(this.map.waypoints, health * hpMultiplier, speed * speedMultiplier, color));
             this.spawnedEnemiesCount++;
         }
@@ -154,16 +154,8 @@ export class Game {
         });
 
         this.entities.forEach(entity => {
-            if (entity instanceof Enemy) {
-                // ゴール到達チェック（簡易）
-                const goal = this.map.waypoints[this.map.waypoints.length - 1];
-                const dx = entity.x - goal.x;
-                const dy = entity.y - goal.y;
-                const dist = Math.sqrt(dx * dx + dy * dy);
-                if (dist < 15 && !entity.markedForDeletion) {
-                    entity.markedForDeletion = true;
-                    this.stats.takeDamage(1);
-                }
+            if (entity instanceof Enemy && entity.reachedGoal) {
+                this.stats.takeDamage(1);
             }
         });
 
