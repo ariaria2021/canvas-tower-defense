@@ -3,6 +3,7 @@ import { Entity } from './Entity';
 export class Enemy extends Entity {
     waypoints: { x: number; y: number }[];
     currentWaypointIndex: number = 0;
+    reachedGoal: boolean = false;
     speed: number = 100; // pixels per second
     health: number = 100;
     maxHealth: number = 100;
@@ -18,26 +19,30 @@ export class Enemy extends Entity {
     }
 
     update(dt: number): void {
-        if (this.currentWaypointIndex >= this.waypoints.length - 1) {
-            this.markedForDeletion = true; // ゴール到達
-            // TODO: プレイヤーのライフを減らす処理
-            return;
-        }
+        if (this.markedForDeletion) return;
 
-        const target = this.waypoints[this.currentWaypointIndex + 1];
-        const dx = target.x - this.x;
-        const dy = target.y - this.y;
-        const distance = Math.sqrt(dx * dx + dy * dy);
+        let remainingDistance = this.speed * dt;
+        while (this.currentWaypointIndex < this.waypoints.length - 1) {
+            const target = this.waypoints[this.currentWaypointIndex + 1];
+            const dx = target.x - this.x;
+            const dy = target.y - this.y;
+            const distance = Math.hypot(dx, dy);
 
-        if (distance < 5) {
-            // ウェイポイント到達とみなす
+            if (remainingDistance < distance) {
+                this.x += (dx / distance) * remainingDistance;
+                this.y += (dy / distance) * remainingDistance;
+                return;
+            }
+
+            // 曲がり角に到達し、残りの距離で次の区間へ進む。
+            this.x = target.x;
+            this.y = target.y;
+            remainingDistance -= distance;
             this.currentWaypointIndex++;
-        } else {
-            // 移動
-            const moveDist = this.speed * dt;
-            this.x += (dx / distance) * moveDist;
-            this.y += (dy / distance) * moveDist;
         }
+
+        this.reachedGoal = true;
+        this.markedForDeletion = true;
     }
 
     draw(ctx: CanvasRenderingContext2D): void {

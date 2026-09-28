@@ -14,6 +14,8 @@ export class Projectile extends Entity {
     }
 
     update(dt: number): void {
+        if (this.markedForDeletion) return;
+
         if (this.target.markedForDeletion) {
             this.markedForDeletion = true;
             return;
@@ -23,7 +25,8 @@ export class Projectile extends Entity {
         const dy = this.target.y - this.y;
         const distance = Math.sqrt(dx * dx + dy * dy);
 
-        if (distance < this.target.radius) {
+        const moveDist = this.speed * dt;
+        if (distance <= moveDist + this.target.radius) {
             // 命中
             this.target.health -= this.damage;
             if (this.target.health <= 0) {
@@ -32,7 +35,6 @@ export class Projectile extends Entity {
             }
             this.markedForDeletion = true;
         } else {
-            const moveDist = this.speed * dt;
             this.x += (dx / distance) * moveDist;
             this.y += (dy / distance) * moveDist;
         }
